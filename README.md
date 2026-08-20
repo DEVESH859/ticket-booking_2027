@@ -2,7 +2,7 @@
 
 Movie and concert ticket booking with visual seat maps, timed holds, waitlists, and QR email tickets.
 
-- **Repository:** https://github.com/Mayank2142/ticket-booking-system
+- **Repository:** https://github.com/Mayank2142/ticket-booking
 - **Branch:** `main` (public)
 
 ## Setup
