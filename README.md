@@ -1,9 +1,116 @@
-# Ticket Booking System
+# LUMIO — Ticket Booking Experience
 
-Movie and concert ticket booking with visual seat maps, timed holds, waitlists, and QR email tickets.
+LUMIO is a cinematic movie and live-event booking platform with real-time visual seat maps, timed holds, waitlists, role-based dashboards, and QR email tickets. The interface is original and responsive, with a premium entertainment identity designed for quick discovery and low-friction checkout.
 
-- **Repository:** https://github.com/Mayank2142/ticket-booking
-- **Branch:** `main` (public)
+- **Repository:** https://github.com/DEVESH859/ticket-booking_2027
+- **Branch:** `main`
+- **Stack:** Next.js 14, React, TypeScript, Tailwind CSS, Prisma and SQLite
+
+## Visual product tour
+
+The screenshots below cover every user-facing page in the application. They were captured from the running production build with the included demo data. The booking and revenue examples use one local sample booking so those states are visible.
+
+### 1. Discovery homepage
+
+![LUMIO discovery homepage](docs/screenshots/home.png)
+
+The homepage is the entertainment discovery hub:
+
+- Cinematic hero with a global search for events, artists and venues.
+- Quick filters for movies, concerts and curated experiences.
+- Responsive event cards with live/cinema labels, venue details, dates and starting prices.
+- Search and category filters query the real events API without a page reload.
+- Clear trust cues for instant confirmation, live seat selection and secure QR tickets.
+
+### 2. Event details and live seat booking
+
+![Event details and live seat booking](docs/screenshots/event-booking.png)
+
+The event page combines discovery, inventory and checkout:
+
+- Event description, date, time, venue and organiser context.
+- Visual seat map with available, held, booked and selected states.
+- Seat inventory refreshes every three seconds so availability stays current.
+- Selected seats appear in a sticky order summary with category pricing and final total.
+- Ten-minute seat holds protect the customer while they complete checkout.
+- Sold-out categories expose the waitlist action automatically.
+
+### 3. Sign in
+
+![LUMIO sign-in page](docs/screenshots/login.png)
+
+The sign-in experience includes:
+
+- Premium split-screen presentation with the original LUMIO artwork.
+- Email/password authentication backed by signed JWT access tokens.
+- Automatic return to the originally requested page after authentication.
+- A visible customer demo account for fast evaluator access.
+
+### 4. Create an account
+
+![LUMIO registration page](docs/screenshots/register.png)
+
+Registration supports both sides of the marketplace:
+
+- Customers can create an account to book and manage tickets.
+- Organisers can select the organiser role and publish events.
+- Successful registration signs the user in immediately.
+- Validation and API errors are displayed inside the form without losing entered context.
+
+### 5. Customer bookings
+
+![Customer booking history](docs/screenshots/my-bookings.png)
+
+The customer ticket area provides:
+
+- Booking reference, event schedule, venue, seats, total and current status.
+- One place to access every confirmed reservation.
+- Cancellation for active bookings.
+- Cancellation releases seats and can trigger the next time-limited waitlist offer.
+
+### 6. Admin venue management
+
+![Admin venue management](docs/screenshots/admin-venues.png)
+
+The admin workspace controls physical inventory:
+
+- Create a venue by defining its row and column grid.
+- Assign premium and standard seat rows during creation.
+- Review existing venue capacity and the number of linked events.
+- Role protection prevents customers and organisers from accessing admin controls.
+
+### 7. Organiser event dashboard
+
+![Organiser event dashboard](docs/screenshots/organiser-events.png)
+
+The organiser dashboard is the publishing command centre:
+
+- Lists only events owned by the signed-in organiser.
+- Shows schedule and venue information at a glance.
+- Provides direct links to event performance summaries.
+- Includes a prominent action for creating a new event.
+
+### 8. Create an event
+
+![Create event form](docs/screenshots/create-event.png)
+
+The event creation workflow captures:
+
+- Event title, movie/concert type and customer-facing description.
+- Venue, date and start time.
+- Category-specific ticket prices based on the selected venue.
+- Automatic creation of live per-event seat inventory after publishing.
+
+### 9. Organiser performance summary
+
+![Organiser event performance summary](docs/screenshots/organiser-summary.png)
+
+The event summary turns bookings into useful operating information:
+
+- Total confirmed booking count.
+- Gross ticket revenue.
+- Category-level booked-seat and price breakdown.
+- Access restricted to the event organiser and administrators.
 
 ## Setup
 
