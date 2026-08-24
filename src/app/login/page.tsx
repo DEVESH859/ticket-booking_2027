@@ -27,17 +27,27 @@ function LoginForm() {
   }
 
   return (
-    <div className="card mx-auto max-w-md space-y-5 p-6">
-      <h1 className="text-xl font-semibold">Login</h1>
-      <form onSubmit={onSubmit} className="space-y-3">
-        <input name="email" type="email" required placeholder="Email" className="input w-full" />
-        <input name="password" type="password" required placeholder="Password" className="input w-full" />
-        {error && <p className="text-sm text-white/80">{error}</p>}
-        <button type="submit" className="btn btn-primary w-full">Login</button>
-      </form>
-      <p className="text-sm muted">
-        No account? <Link href="/register" className="text-white underline">Register</Link>
-      </p>
+    <div className="auth-shell">
+      <div className="auth-visual">
+        <div className="auth-content">
+          <span className="eyebrow"><span className="eyebrow-dot" /> Your next story awaits</span>
+          <h2 className="mt-5 max-w-sm text-3xl font-semibold tracking-[-0.05em]">Every great night starts with a ticket.</h2>
+          <p className="mt-3 max-w-sm text-sm leading-6 text-white/55">Save favourites, choose your seats and keep every QR ticket in one place.</p>
+        </div>
+      </div>
+      <div className="auth-form">
+        <p className="label">Welcome back</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-[-0.045em]">Sign in to LUMIO</h1>
+        <p className="mt-2 text-sm muted">Your next unforgettable experience is one step away.</p>
+        <form onSubmit={onSubmit} className="mt-8 space-y-4">
+          <label className="block text-xs font-medium text-white/70">Email address<input name="email" type="email" required placeholder="you@example.com" className="input mt-2 w-full" /></label>
+          <label className="block text-xs font-medium text-white/70">Password<input name="password" type="password" required placeholder="Enter your password" className="input mt-2 w-full" /></label>
+          {error && <p className="message !py-2.5">{error}</p>}
+          <button type="submit" className="btn btn-primary mt-2 w-full">Sign in</button>
+        </form>
+        <p className="mt-6 text-center text-sm muted">New to LUMIO? <Link href="/register" className="font-semibold text-[#ff6b87] hover:text-white">Create an account</Link></p>
+        <div className="mt-7 rounded-xl border border-white/[0.07] bg-white/[0.03] p-3 text-[11px] leading-5 text-white/45">Demo: customer@demo.com · password123</div>
+      </div>
     </div>
   );
 }

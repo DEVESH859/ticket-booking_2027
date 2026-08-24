@@ -35,6 +35,8 @@ yarn-error.log*
 .claude/
 .windsurf/
 skills-lock.json
+.chrome-preview/
+preview-*.png
 
 # vercel
 .vercel

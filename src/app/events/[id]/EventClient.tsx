@@ -27,8 +27,12 @@ export default function EventClient() {
   const offerToken = searchParams.get("offer");
   const [event, setEvent] = useState<{
     title: string;
+    type: string;
+    description?: string | null;
     date: string;
     time: string;
+    venue: { name: string };
+    organiser: { name: string };
     prices: { categoryId: string; price: number; category: { name: string } }[];
   } | null>(null);
   const [showSeats, setShowSeats] = useState<ShowSeat[]>([]);
@@ -141,11 +145,25 @@ export default function EventClient() {
     heldByMe: s.heldById === userId,
   }));
 
+  const selectedDetails = selected.map((seatId) => {
+    const cell = seatCells.find((seat) => seat.seatId === seatId);
+    const price = event.prices.find((item) => item.categoryId === cell?.category.name || item.category.name === cell?.category.name)?.price ?? 0;
+    return { ...cell, price };
+  });
+  const total = selectedDetails.reduce((sum, seat) => sum + seat.price, 0);
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{event.title}</h1>
-        <p className="mt-1 text-sm muted">{event.date} · {event.time}</p>
+    <div className="space-y-8 pb-8">
+      <div className="overflow-hidden rounded-[26px] border border-white/[0.09] bg-[radial-gradient(circle_at_75%_30%,rgba(255,79,112,.25),transparent_25%),radial-gradient(circle_at_50%_100%,rgba(136,108,255,.18),transparent_40%),#121018] px-6 py-9 md:px-10 md:py-12">
+        <p className="label">{event.type === "MOVIE" ? "Now showing" : "Live experience"}</p>
+        <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-[-0.055em] md:text-6xl">{event.title}</h1>
+        <p className="mt-4 max-w-2xl text-sm leading-6 text-white/55 md:text-base">{event.description || "An unforgettable experience, live and in the moment."}</p>
+        <div className="mt-7 flex flex-wrap gap-2 text-xs font-medium text-white/70">
+          <span className="rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2">{event.date}</span>
+          <span className="rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2">{event.time}</span>
+          <span className="rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2">{event.venue.name}</span>
+          <span className="rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2">by {event.organiser.name}</span>
+        </div>
       </div>
 
       {offer && (
@@ -155,53 +173,62 @@ export default function EventClient() {
         </div>
       )}
 
-      <SeatMap rows={layout.rows} cols={layout.cols} seats={seatCells} selected={selected} onToggle={toggleSeat} />
-
-      {selected.length > 0 && (
-        <button onClick={holdSeats} className="btn">Hold seats</button>
-      )}
-
-      {selected.length > 0 && (
-        <div className="card space-y-4 p-5">
-          <h2 className="font-medium">Checkout</h2>
-          <p className="text-sm muted">
-            Seats: {selected.map((sid) => seatCells.find((s) => s.seatId === sid)?.label).filter(Boolean).join(", ")}
-          </p>
-          {customer ? (
-            <div className="space-y-1 text-sm">
-              <p><span className="muted">Name</span> · {customer.name}</p>
-              <p><span className="muted">Email</span> · {customer.email}</p>
-              <p className="text-xs muted">QR ticket will be sent to this email.</p>
-            </div>
-          ) : (
-            <p className="text-sm muted">Log in to complete booking.</p>
-          )}
-          <button
-            onClick={bookSeats}
-            disabled={!selected.length || !customer}
-            className="btn btn-primary"
-          >
-            Confirm booking
-          </button>
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="space-y-4">
+          <div className="flex items-end justify-between gap-4 px-1">
+            <div><p className="label">Choose your view</p><h2 className="mt-2 text-2xl font-semibold tracking-[-0.03em]">Select your seats</h2></div>
+            <span className="text-xs muted">Updates live</span>
+          </div>
+          <SeatMap rows={layout.rows} cols={layout.cols} seats={seatCells} selected={selected} onToggle={toggleSeat} />
         </div>
-      )}
 
-      <div className="card p-5">
-        <h2 className="font-medium">Pricing & waitlist</h2>
-        <ul className="mt-3 space-y-2 text-sm">
+        <aside className="card sticky top-24 overflow-hidden">
+          <div className="border-b border-white/[0.08] p-5">
+            <p className="label">Your order</p>
+            <h2 className="mt-2 text-xl font-semibold">{selected.length ? `${selected.length} seat${selected.length > 1 ? "s" : ""} selected` : "Pick a seat to begin"}</h2>
+          </div>
+          <div className="space-y-4 p-5">
+            {selected.length ? (
+              <>
+                <div className="flex flex-wrap gap-2">
+                  {selectedDetails.map((seat) => <span key={seat.seatId} className="rounded-lg bg-[#ff4f70]/10 px-2.5 py-1.5 text-xs font-semibold text-[#ff8ba1]">{seat.label}</span>)}
+                </div>
+                <button onClick={holdSeats} className="btn w-full">Hold seats for 10 min</button>
+                <div className="space-y-2 border-y border-white/[0.08] py-4 text-sm">
+                  <div className="flex justify-between"><span className="muted">Ticket total</span><span>₹{total}</span></div>
+                  <div className="flex justify-between"><span className="muted">Booking fee</span><span className="text-[#4fd2a0]">Free</span></div>
+                  <div className="flex justify-between pt-1 text-base font-semibold"><span>Payable</span><span>₹{total}</span></div>
+                </div>
+                {customer ? (
+                  <div className="text-xs leading-5 muted">QR ticket will be sent to <span className="text-white/80">{customer.email}</span>.</div>
+                ) : (
+                  <p className="text-xs leading-5 muted">Sign in to secure your seats and receive the QR ticket.</p>
+                )}
+                <button onClick={bookSeats} disabled={!customer} className="btn btn-primary w-full">Confirm & book</button>
+              </>
+            ) : (
+              <div className="py-5 text-center">
+                <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-white/[0.05] text-2xl">↗</div>
+                <p className="mt-4 text-sm leading-6 muted">Select one or more available seats from the live map.</p>
+              </div>
+            )}
+          </div>
+        </aside>
+      </div>
+
+      <div className="card p-5 md:p-7">
+        <div className="flex items-end justify-between gap-4"><div><p className="label">Options</p><h2 className="mt-2 text-xl font-semibold">Pricing & availability</h2></div><span className="text-xs muted">per ticket</span></div>
+        <ul className="mt-5 divide-y divide-white/[0.07] text-sm">
           {event.prices.map((p) => {
             const seatsLeft = availability[p.categoryId] ?? 0;
             return (
-              <li key={p.categoryId} className="flex items-center justify-between gap-4">
-                <span className="muted">
-                  {p.category.name} · ₹{p.price}
-                  {seatsLeft > 0 ? ` · ${seatsLeft} left` : " · sold out"}
-                </span>
+              <li key={p.categoryId} className="flex items-center justify-between gap-4 py-4 first:pt-0 last:pb-0">
+                <span><span className="font-medium">{p.category.name}</span><span className="ml-2 text-xs muted">{seatsLeft > 0 ? `${seatsLeft} seats left` : "Sold out"}</span></span>
+                <span className="flex items-center gap-4"><strong>₹{p.price}</strong>
                 {seatsLeft === 0 && (
-                  <button onClick={() => joinWaitlist(p.categoryId)} className="btn text-xs">
-                    Join waitlist
-                  </button>
+                  <button onClick={() => joinWaitlist(p.categoryId)} className="btn !min-h-9 !px-3 !py-1.5 text-xs">Join waitlist</button>
                 )}
+                </span>
               </li>
             );
           })}

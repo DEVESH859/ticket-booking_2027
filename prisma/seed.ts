@@ -1,5 +1,5 @@
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
-import { PrismaClient, Role } from "../src/generated/prisma/client";
+import { EventType, PrismaClient, Role } from "../src/generated/prisma/client";
 import bcrypt from "bcryptjs";
 import { seatLabel } from "../src/lib/seats-label";
 
@@ -66,22 +66,81 @@ async function main() {
   const organiser = await db.user.findUnique({ where: { email: "organiser@demo.com" } });
   if (!organiser) return;
 
-  const existingEvent = await db.event.findFirst({ where: { title: "Summer Concert" } });
-  if (!existingEvent) {
-    const seats = await db.seat.findMany({ where: { venueId: venue.id } });
+  const seats = await db.seat.findMany({ where: { venueId: venue.id } });
+  const demoEvents = [
+    {
+      title: "Summer Pulse",
+      type: EventType.CONCERT,
+      description: "A euphoric night of live electronic music, immersive light and arena-sized energy.",
+      date: "2026-09-15",
+      time: "19:30",
+      premiumPrice: 1800,
+      standardPrice: 850,
+    },
+    {
+      title: "Beyond the Blue",
+      type: EventType.MOVIE,
+      description: "A visually breathtaking big-screen journey through memory, distance and the deep unknown.",
+      date: "2026-09-19",
+      time: "20:15",
+      premiumPrice: 650,
+      standardPrice: 320,
+    },
+    {
+      title: "The Golden Hour",
+      type: EventType.CONCERT,
+      description: "A warm, intimate showcase of indie favourites and new voices under a sea of amber light.",
+      date: "2026-09-26",
+      time: "18:00",
+      premiumPrice: 1400,
+      standardPrice: 700,
+    },
+    {
+      title: "Neon After Dark",
+      type: EventType.MOVIE,
+      description: "A stylish late-night thriller where every secret glows brighter after midnight.",
+      date: "2026-10-03",
+      time: "21:45",
+      premiumPrice: 720,
+      standardPrice: 380,
+    },
+    {
+      title: "Monsoon Sessions",
+      type: EventType.CONCERT,
+      description: "Soulful live performances inspired by rain, rhythm and the sound of the city.",
+      date: "2026-10-10",
+      time: "19:00",
+      premiumPrice: 1600,
+      standardPrice: 750,
+    },
+    {
+      title: "Parallel Hearts",
+      type: EventType.MOVIE,
+      description: "Two lives collide across alternate realities in this bold romantic science-fiction premiere.",
+      date: "2026-10-17",
+      time: "20:30",
+      premiumPrice: 680,
+      standardPrice: 340,
+    },
+  ];
+
+  for (const item of demoEvents) {
+    const existingEvent = await db.event.findFirst({ where: { title: item.title } });
+    if (existingEvent) continue;
+
     const event = await db.event.create({
       data: {
-        title: "Summer Concert",
-        type: "CONCERT",
-        description: "Live music night",
+        title: item.title,
+        type: item.type,
+        description: item.description,
         venueId: venue.id,
-        date: "2026-09-15",
-        time: "19:30",
+        date: item.date,
+        time: item.time,
         organiserId: organiser.id,
         prices: {
           create: [
-            { categoryId: premium.id, price: 1200 },
-            { categoryId: standard.id, price: 600 },
+            { categoryId: premium.id, price: item.premiumPrice },
+            { categoryId: standard.id, price: item.standardPrice },
           ],
         },
       },
